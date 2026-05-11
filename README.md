@@ -32,7 +32,10 @@ Sau khi các container đã chạy thành công, bạn có thể truy cập:
 Mặc định khi chạy lần đầu, Docker sẽ khởi tạo cấu trúc database cơ bản. Để cập nhật toàn bộ dữ liệu mới nhất từ file backup bạn vừa tạo (`latest_backup.sql`), hãy chạy lệnh sau:
 
 ```bash
+# MacOS
 docker compose exec -T db mysql -u root -psecurepassword mystore < sql/latest_backup.sql
+# Windows ps
+Get-Content -Encoding UTF8 sql/latest_backup.sql | docker compose exec -T db mysql --default-character-set=utf8mb4 -u root -psecurepassword mystore
 ```
 
 ## 4. Thông tin quản trị
