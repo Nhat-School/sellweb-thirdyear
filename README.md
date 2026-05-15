@@ -40,7 +40,7 @@ Do trước đây dự án dùng Docker nên file kết nối cần được ch�
 Mở file `includes/connect.php` (hoặc file cấu hình DB tương tự) và sửa lại thông tin như sau:
 ```php
 // Thông tin cho XAMPP mặc định
-$host = "localhost";
+$host = "localhost:3307";
 $user = "root";
 $pass = ""; // Mặc định XAMPP không có mật khẩu
 $db   = "mystore";
@@ -54,6 +54,6 @@ Mở trình duyệt và truy cập vào đường dẫn thư mục dự án củ
 
 ---
 
-## Các lưu ý khác:
-- **Quyền ghi file ảnh:** Trong XAMPP Windows, thư mục `assets/images/` thường đã có sẵn quyền ghi. Tuy nhiên nếu dùng MacOS, bạn có thể cần cấp quyền bằng lệnh `chmod -R 777 assets/images/` để có thể upload ảnh sản phẩm.
-- **Dọn dẹp code thừa:** Bạn có thể xóa file `Dockerfile` và `docker-compose.yml` vì hệ thống hiện tại chạy bằng XAMPP và không cần dùng đến chúng nữa.
+httpd.conf :Listen 80 - 8080,ServerName localhost:80
+phpmyadmin config: $cfg['Servers'][$i]['port'] = '3307';
+httpd-ssl.conf Listen 443 - 4433,<VirtualHost _default_:443>
