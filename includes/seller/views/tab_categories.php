@@ -1,4 +1,4 @@
-<!-- Category Management (Admin Only) -->
+
 <div class="card shadow-sm border-0">
     <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
         <h5 class="mb-0 fw-medium">Quản Lý Danh Mục</h5>

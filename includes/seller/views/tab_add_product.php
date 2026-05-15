@@ -1,4 +1,4 @@
-<!-- Add Product Form -->
+
 <div class="card shadow-sm border-0 mb-4">
     <div class="card-header bg-white border-bottom p-3">
         <h5 class="mb-0 fw-medium"><i class="fas fa-plus-circle me-2" style="color:var(--shopee-primary);"></i>Thêm Sản Phẩm Mới</h5>
@@ -42,8 +42,6 @@
                     <label class="form-label small fw-bold">Mô tả <span class="text-danger">*</span></label>
                     <textarea name="description" class="form-control" rows="3" placeholder="Mô tả chi tiết sản phẩm, chất liệu, kích thước..." required></textarea>
                 </div>
-
-                <!-- Ảnh bìa -->
                 <div class="col-12">
                     <label class="form-label small fw-bold">Ảnh Bìa <span class="text-danger">*</span></label>
                     <div class="upload-zone" id="mainImgZone" onclick="document.getElementById('product_image1').click()" 
@@ -57,8 +55,6 @@
                     </div>
                     <input type="file" id="product_image1" name="product_image1" class="d-none" accept="image/*" required onchange="previewMain(this)">
                 </div>
-
-                <!-- Ảnh phụ -->
                 <div class="col-12">
                     <label class="form-label small fw-bold">Ảnh Phụ <span class="text-muted fw-normal">(tuỳ chọn, tối đa 5 ảnh)</span></label>
                     <div class="d-flex gap-2 flex-wrap" id="extraPreviewContainer">
@@ -70,7 +66,6 @@
                     <input type="file" id="extra_images" name="extra_images[]" class="d-none" accept="image/*" multiple onchange="previewExtra(this)">
                     <div class="text-muted small mt-1">Ảnh phụ giúp người mua xem sản phẩm từ nhiều góc độ</div>
                 </div>
-
                 <div class="col-12">
                     <hr class="my-1">
                     <div class="d-flex justify-content-end gap-2 pt-2">

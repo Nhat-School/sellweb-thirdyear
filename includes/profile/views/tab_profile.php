@@ -1,4 +1,4 @@
-<!-- HỒ SƠ TAB -->
+
 <div class="card shadow-sm border-0">
     <div class="card-header bg-white border-bottom p-4">
         <h5 class="mb-1 fw-medium">Hồ Sơ Của Tôi</h5>

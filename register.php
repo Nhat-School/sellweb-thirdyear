@@ -1,23 +1,17 @@
 <?php
 include('includes/connect.php');
 include('includes/flash.php');
-
-// Nếu đã đăng nhập thì redirect về trang chủ
 if (isset($_SESSION['user_id'])) {
     header('Location: index.php');
     exit();
 }
-
 $error_msg   = '';
 $success_msg = '';
-
 if (isset($_POST['register'])) {
     $username   = mysqli_real_escape_string($conn, trim($_POST['username']));
     $email      = mysqli_real_escape_string($conn, trim($_POST['email']));
     $password   = $_POST['password'];
     $confirm_pw = $_POST['confirm_password'];
-
-    // Validations
     if (empty($username) || empty($email) || empty($password) || empty($confirm_pw)) {
         $error_msg = 'Vui lòng điền đầy đủ tất cả các trường!';
     } elseif (strlen($username) < 3) {
@@ -29,12 +23,10 @@ if (isset($_POST['register'])) {
     } elseif ($password !== $confirm_pw) {
         $error_msg = 'Mật khẩu xác nhận không khớp!';
     } else {
-        // Kiểm tra username tồn tại
         $check_uname = "SELECT user_id FROM users WHERE username='$username'";
         if (mysqli_num_rows(mysqli_query($conn, $check_uname)) > 0) {
             $error_msg = 'Tên đăng nhập này đã được sử dụng!';
         } else {
-            // Kiểm tra email tồn tại
             $check_email = "SELECT user_id FROM users WHERE email='$email'";
             if (mysqli_num_rows(mysqli_query($conn, $check_email)) > 0) {
                 $error_msg = 'Email này đã được đăng ký!';
@@ -66,7 +58,6 @@ if (isset($_POST['register'])) {
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
         body { background: #f5f5f5; }
-
         .auth-page-wrap {
             min-height: 100vh;
             display: flex;
@@ -74,7 +65,6 @@ if (isset($_POST['register'])) {
             background: linear-gradient(135deg, #f53d2d 0%, #ff6633 50%, #ff9944 100%);
             padding: 0;
         }
-
         .auth-card {
             width: 100%;
             max-width: 900px;
@@ -85,7 +75,6 @@ if (isset($_POST['register'])) {
             display: flex;
             min-height: 580px;
         }
-
         .auth-left {
             background: linear-gradient(-180deg, #f53d2d, #f63);
             color: white;
@@ -153,7 +142,6 @@ if (isset($_POST['register'])) {
             font-weight: 700;
             flex-shrink: 0;
         }
-
         .auth-right {
             background: white;
             flex: 1.1;
@@ -174,7 +162,6 @@ if (isset($_POST['register'])) {
             font-size: 0.875rem;
             margin-bottom: 22px;
         }
-
         .form-label-sm {
             font-size: 0.8125rem;
             font-weight: 600;
@@ -195,7 +182,6 @@ if (isset($_POST['register'])) {
         }
         .form-control-auth.is-invalid { border-color: #dc3545; }
         .form-control-auth.is-valid   { border-color: #198754; }
-
         .input-icon-wrap { position: relative; }
         .input-icon-wrap .form-control-auth { padding-right: 44px; }
         .input-icon-wrap .toggle-pw {
@@ -206,7 +192,6 @@ if (isset($_POST['register'])) {
             transition: color 0.2s;
         }
         .input-icon-wrap .toggle-pw:hover { color: var(--shopee-primary); }
-
         /* Password Strength */
         .pw-strength-bar {
             height: 4px;
@@ -226,7 +211,6 @@ if (isset($_POST['register'])) {
             font-size: 0.75rem;
             margin-top: 3px;
         }
-
         .btn-auth-primary {
             background: linear-gradient(-180deg, #f53d2d, #f63);
             color: white;
@@ -242,7 +226,6 @@ if (isset($_POST['register'])) {
         .btn-auth-primary:hover { opacity: 0.92; color: white; transform: translateY(-1px); }
         .btn-auth-primary:active { transform: translateY(0); }
         .btn-auth-primary:disabled { opacity: 0.7; }
-
         .alert-inline {
             border-radius: 8px;
             font-size: 0.875rem;
@@ -250,7 +233,6 @@ if (isset($_POST['register'])) {
             margin-bottom: 16px;
             border: none;
         }
-
         .auth-footer-link {
             text-align: center;
             margin-top: 16px;
@@ -263,12 +245,10 @@ if (isset($_POST['register'])) {
             text-decoration: none;
         }
         .auth-footer-link a:hover { text-decoration: underline; }
-
         @media (max-width: 700px) {
             .auth-left { display: none; }
             .auth-right { padding: 28px 20px; }
         }
-
         .auth-right { animation: slideInRight 0.4s cubic-bezier(.4,0,.2,1); }
         @keyframes slideInRight {
             from { opacity: 0; transform: translateX(20px); }
@@ -279,7 +259,6 @@ if (isset($_POST['register'])) {
             from { opacity: 0; transform: translateX(-20px); }
             to { opacity: 1; transform: translateX(0); }
         }
-
         .auth-header {
             background: linear-gradient(-180deg, #f53d2d, #f63);
             padding: 14px 0;
@@ -289,7 +268,6 @@ if (isset($_POST['register'])) {
             color: white; text-decoration: none;
             font-size: 1.5rem; font-weight: 700;
         }
-
         /* Terms checkbox */
         .terms-check .form-check-input {
             border-radius: 4px;
@@ -303,19 +281,15 @@ if (isset($_POST['register'])) {
     </style>
 </head>
 <body>
-
 <div class="auth-header">
     <div class="container">
         <a href="index.php"><i class="fas fa-shopping-bag me-2"></i>NhatShop</a>
         <span class="text-white ms-3" style="font-size:0.875rem; opacity:0.85;">Đăng Ký</span>
     </div>
 </div>
-
 <div class="auth-page-wrap" style="padding-top: 60px;">
     <div class="container py-4">
         <div class="auth-card">
-
-            <!-- Left Branding -->
             <div class="auth-left">
                 <div class="auth-brand-logo">
                     <i class="fas fa-shopping-bag"></i>NhatShop
@@ -340,23 +314,17 @@ if (isset($_POST['register'])) {
                     </li>
                 </ul>
             </div>
-
-            <!-- Right Form -->
             <div class="auth-right">
                 <h3>Tạo tài khoản</h3>
                 <p class="auth-subtitle">Miễn phí, chỉ mất 30 giây!</p>
-
                 <?php if ($error_msg): ?>
                 <div class="alert alert-danger alert-inline d-flex align-items-center gap-2" role="alert">
                     <i class="fas fa-exclamation-circle flex-shrink-0"></i>
                     <div><?php echo $error_msg; ?></div>
                 </div>
                 <?php endif; ?>
-
                 <form action="register.php" method="POST" id="regForm" novalidate>
                     <input type="hidden" name="register" value="1">
-
-                    <!-- Username -->
                     <div class="mb-3">
                         <label class="form-label-sm">Tên đăng nhập <span class="text-danger">*</span></label>
                         <input type="text" class="form-control-auth w-100" name="username" id="regUsername"
@@ -365,8 +333,6 @@ if (isset($_POST['register'])) {
                                required autocomplete="username">
                         <div class="invalid-feedback" id="usernameError"></div>
                     </div>
-
-                    <!-- Email -->
                     <div class="mb-3">
                         <label class="form-label-sm">Email <span class="text-danger">*</span></label>
                         <input type="email" class="form-control-auth w-100" name="email" id="regEmail"
@@ -374,8 +340,6 @@ if (isset($_POST['register'])) {
                                value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"
                                required autocomplete="email">
                     </div>
-
-                    <!-- Password -->
                     <div class="mb-1">
                         <label class="form-label-sm">Mật khẩu <span class="text-danger">*</span></label>
                         <div class="input-icon-wrap">
@@ -387,13 +351,10 @@ if (isset($_POST['register'])) {
                             </button>
                         </div>
                     </div>
-                    <!-- Strength bar -->
                     <div class="pw-strength-bar mb-1">
                         <div class="pw-strength-fill" id="strengthFill"></div>
                     </div>
                     <div class="pw-strength-text text-muted mb-3" id="strengthText"></div>
-
-                    <!-- Confirm Password -->
                     <div class="mb-3">
                         <label class="form-label-sm">Xác nhận mật khẩu <span class="text-danger">*</span></label>
                         <div class="input-icon-wrap">
@@ -406,8 +367,6 @@ if (isset($_POST['register'])) {
                         </div>
                         <div class="small mt-1" id="matchMsg"></div>
                     </div>
-
-                    <!-- Terms -->
                     <div class="form-check terms-check mb-4">
                         <input type="checkbox" class="form-check-input" id="agreeTerms" name="agree" required>
                         <label class="form-check-label small text-muted" for="agreeTerms">
@@ -415,12 +374,10 @@ if (isset($_POST['register'])) {
                             và <a href="#" class="text-decoration-none" style="color:var(--shopee-primary);">Chính sách bảo mật</a>
                         </label>
                     </div>
-
                     <button type="submit" name="register" class="btn-auth-primary" id="regBtn">
                         ĐĂNG KÝ NGAY
                     </button>
                 </form>
-
                 <div class="auth-footer-link">
                     Đã có tài khoản? <a href="login.php">Đăng nhập</a>
                 </div>
@@ -428,7 +385,6 @@ if (isset($_POST['register'])) {
         </div>
     </div>
 </div>
-
 <script>
 function togglePw(id, btn) {
     const input = document.getElementById(id);
@@ -441,7 +397,6 @@ function togglePw(id, btn) {
         icon.className = 'fas fa-eye';
     }
 }
-
 function checkStrength(pw) {
     const fill = document.getElementById('strengthFill');
     const text = document.getElementById('strengthText');
@@ -451,7 +406,6 @@ function checkStrength(pw) {
     if (/[A-Z]/.test(pw)) score++;
     if (/[0-9]/.test(pw)) score++;
     if (/[^A-Za-z0-9]/.test(pw)) score++;
-
     const levels = [
         { w: '20%', color: '#dc3545', label: 'Rất yếu' },
         { w: '40%', color: '#fd7e14', label: 'Yếu' },
@@ -470,7 +424,6 @@ function checkStrength(pw) {
     text.textContent = 'Độ mạnh: ' + level.label;
     text.style.color = level.color;
 }
-
 function checkMatch() {
     const pw   = document.getElementById('regPw').value;
     const conf = document.getElementById('confPw').value;
@@ -482,7 +435,6 @@ function checkMatch() {
         msg.innerHTML = '<i class="fas fa-times-circle text-danger me-1"></i><span class="text-danger">Mật khẩu không khớp!</span>';
     }
 }
-
 document.getElementById('regForm').addEventListener('submit', function(e) {
     const agree = document.getElementById('agreeTerms');
     if (!agree.checked) {
@@ -495,7 +447,6 @@ document.getElementById('regForm').addEventListener('submit', function(e) {
     btn.disabled = true;
 });
 </script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,7 +1,6 @@
 <footer class="main-footer mt-auto">
     <div class="container py-5">
         <div class="row g-4">
-            <!-- Customer Service -->
             <div class="col-lg-3 col-md-6">
                 <h6 class="footer-heading text-uppercase fw-bold mb-3">CHĂM SÓC KHÁCH HÀNG</h6>
                 <ul class="list-unstyled footer-links">
@@ -12,8 +11,6 @@
                     <li class="mb-2"><a href="#" class="text-decoration-none text-muted small">Chính Sách Bảo Hành</a></li>
                 </ul>
             </div>
-
-            <!-- About -->
             <div class="col-lg-3 col-md-6">
                 <h6 class="footer-heading text-uppercase fw-bold mb-3">VỀ NHATSHOP</h6>
                 <ul class="list-unstyled footer-links">
@@ -24,8 +21,6 @@
                     <li class="mb-2"><a href="#" class="text-decoration-none text-muted small">Kênh Người Bán</a></li>
                 </ul>
             </div>
-
-            <!-- Payment & Shipping -->
             <div class="col-lg-3 col-md-6">
                 <h6 class="footer-heading text-uppercase fw-bold mb-3">THANH TOÁN</h6>
                 <div class="d-flex flex-wrap gap-3 mb-4 text-muted">
@@ -41,8 +36,6 @@
                     <span class="badge bg-light text-dark border p-2">J&T Express</span>
                 </div>
             </div>
-
-            <!-- Follow & Apps -->
             <div class="col-lg-3 col-md-6">
                 <h6 class="footer-heading text-uppercase fw-bold mb-3">THEO DÕI CHÚNG TÔI</h6>
                 <div class="d-flex gap-3 mb-4">
@@ -74,9 +67,7 @@
         </div>
     </div>
 </footer>
-
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</div> <!-- End page-wrapper -->
+</div> 
 </body>
 </html>

@@ -1,27 +1,20 @@
 <?php
 include('includes/connect.php');
 include('includes/flash.php');
-
-// Nếu đã đăng nhập thì redirect về trang chủ
 if (isset($_SESSION['user_id'])) {
     header('Location: index.php');
     exit();
 }
-
 $error_msg   = '';
 $success_msg = '';
-
-// Nhận flash message từ redirect trước (ví dụ sau register)
 $flash = get_flash();
 if ($flash) {
     if ($flash['type'] === 'success') $success_msg = $flash['message'];
     else $error_msg = $flash['message'];
 }
-
 if (isset($_POST['login'])) {
     $username = mysqli_real_escape_string($conn, trim($_POST['username']));
     $password = $_POST['password'];
-
     if (empty($username) || empty($password)) {
         $error_msg = 'Vui lòng điền đầy đủ thông tin!';
     } else {
@@ -29,19 +22,15 @@ if (isset($_POST['login'])) {
         $result   = mysqli_query($conn, $select_query);
         $row_count = mysqli_num_rows($result);
         $row_data  = mysqli_fetch_assoc($result);
-
         if ($row_count > 0) {
             $old_match = ($password === $row_data['password']);
             $hash_match = password_verify($password, $row_data['password']);
             if ($old_match || $hash_match) {
                 $_SESSION['username'] = $row_data['username'];
                 $_SESSION['user_id']  = $row_data['user_id'];
-
-                // Remember me
                 if (isset($_POST['remember'])) {
                     setcookie('remember_user', $row_data['username'], time() + (86400 * 30), '/');
                 }
-
                 set_flash('success', 'Chào mừng trở lại, ' . htmlspecialchars($row_data['username']) . '! 🎉');
                 header('Location: index.php');
                 exit();
@@ -53,8 +42,6 @@ if (isset($_POST['login'])) {
         }
     }
 }
-
-// Pre-fill remember me
 $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['remember_user']) : '';
 ?>
 <!DOCTYPE html>
@@ -70,7 +57,6 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
         body { background: #f5f5f5; }
-
         .auth-page-wrap {
             min-height: 100vh;
             display: flex;
@@ -78,7 +64,6 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
             background: linear-gradient(135deg, #f53d2d 0%, #ff6633 50%, #ff9944 100%);
             padding: 0;
         }
-
         .auth-card {
             width: 100%;
             max-width: 900px;
@@ -89,7 +74,6 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
             display: flex;
             min-height: 520px;
         }
-
         /* Left branding panel */
         .auth-left {
             background: linear-gradient(-180deg, #f53d2d, #f63);
@@ -151,7 +135,6 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
             margin-right: 8px;
             opacity: 0.8;
         }
-
         /* Right form panel */
         .auth-right {
             background: white;
@@ -172,7 +155,6 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
             font-size: 0.875rem;
             margin-bottom: 28px;
         }
-
         .form-floating label { color: #999; font-size: 0.875rem; }
         .form-floating .form-control {
             border: 1.5px solid #e8e8e8;
@@ -184,7 +166,6 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
             border-color: var(--shopee-primary);
             box-shadow: 0 0 0 3px rgba(238,77,45,0.12);
         }
-
         .btn-auth-primary {
             background: linear-gradient(-180deg, #f53d2d, #f63);
             color: white;
@@ -203,7 +184,6 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
             transform: translateY(-1px);
         }
         .btn-auth-primary:active { transform: translateY(0); }
-
         .auth-divider {
             display: flex;
             align-items: center;
@@ -219,7 +199,6 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
             height: 1px;
             background: #eee;
         }
-
         .input-icon-wrap {
             position: relative;
         }
@@ -238,7 +217,6 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
             transition: color 0.2s;
         }
         .input-icon-wrap .toggle-pw:hover { color: var(--shopee-primary); }
-
         .alert-inline {
             border-radius: 8px;
             font-size: 0.875rem;
@@ -246,7 +224,6 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
             margin-bottom: 18px;
             border: none;
         }
-
         .auth-footer-link {
             text-align: center;
             margin-top: 20px;
@@ -259,7 +236,6 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
             text-decoration: none;
         }
         .auth-footer-link a:hover { text-decoration: underline; }
-
         /* Social login buttons */
         .btn-social {
             border: 1.5px solid #e8e8e8;
@@ -279,14 +255,12 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
             background: #fafafa;
             color: #333;
         }
-
         /* Responsive */
         @media (max-width: 700px) {
             .auth-left { display: none; }
             .auth-right { padding: 32px 24px; }
             .auth-card { border-radius: 12px; }
         }
-
         /* Animate in */
         .auth-right {
             animation: slideInRight 0.4s cubic-bezier(.4,0,.2,1);
@@ -302,7 +276,6 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
             from { opacity: 0; transform: translateX(-20px); }
             to   { opacity: 1; transform: translateX(0); }
         }
-
         /* Header minimal */
         .auth-header {
             background: linear-gradient(-180deg, #f53d2d, #f63);
@@ -318,18 +291,15 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
     </style>
 </head>
 <body>
-<!-- Minimal Header -->
 <div class="auth-header">
     <div class="container">
         <a href="index.php"><i class="fas fa-shopping-bag me-2"></i>NhatShop</a>
         <span class="text-white ms-3" style="font-size:0.875rem; opacity:0.85;">Đăng Nhập</span>
     </div>
 </div>
-
 <div class="auth-page-wrap" style="padding-top: 60px;">
     <div class="container py-4">
         <div class="auth-card">
-            <!-- Left Branding -->
             <div class="auth-left">
                 <div class="auth-brand-logo">
                     <i class="fas fa-shopping-bag"></i>NhatShop
@@ -342,13 +312,9 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
                     <li><i class="fas fa-headset"></i> Hỗ trợ 24/7</li>
                 </ul>
             </div>
-
-            <!-- Right Form -->
             <div class="auth-right">
                 <h3>Đăng nhập</h3>
                 <p class="auth-subtitle">Chào mừng trở lại! Vui lòng đăng nhập để tiếp tục.</p>
-
-                <!-- Error / Success -->
                 <?php if ($error_msg): ?>
                 <div class="alert alert-danger alert-inline d-flex align-items-center gap-2" role="alert">
                     <i class="fas fa-exclamation-circle flex-shrink-0"></i>
@@ -361,11 +327,8 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
                     <div><?php echo htmlspecialchars($success_msg); ?></div>
                 </div>
                 <?php endif; ?>
-
                 <form action="login.php" method="POST" id="loginForm" novalidate>
                     <input type="hidden" name="login" value="1">
-
-                    <!-- Username / Email -->
                     <div class="mb-3">
                         <label class="form-label small fw-semibold text-muted">Tên đăng nhập hoặc Email</label>
                         <input type="text" class="form-control" name="username" id="username"
@@ -373,8 +336,6 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
                                value="<?php echo $remembered ?: (isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''); ?>"
                                required autocomplete="username">
                     </div>
-
-                    <!-- Password -->
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <label class="form-label small fw-semibold text-muted mb-0">Mật khẩu</label>
@@ -388,19 +349,15 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
                             </button>
                         </div>
                     </div>
-
-                    <!-- Remember me -->
                     <div class="mb-4 form-check">
                         <input type="checkbox" class="form-check-input" name="remember" id="rememberMe"
                                <?php echo $remembered ? 'checked' : ''; ?>>
                         <label class="form-check-label small text-muted" for="rememberMe">Nhớ tài khoản</label>
                     </div>
-
                     <button type="submit" name="login" class="btn-auth-primary" id="loginBtn">
                         ĐĂNG NHẬP
                     </button>
                 </form>
-
                 <div class="auth-footer-link">
                     Chưa có tài khoản? <a href="register.php">Đăng ký ngay</a>
                 </div>
@@ -408,7 +365,6 @@ $remembered = isset($_COOKIE['remember_user']) ? htmlspecialchars($_COOKIE['reme
         </div>
     </div>
 </div>
-
 <script>
 function togglePw(id, btn) {
     const input = document.getElementById(id);
@@ -421,7 +377,6 @@ function togglePw(id, btn) {
         icon.className = 'fas fa-eye';
     }
 }
-
 // Loading state on submit
 document.getElementById('loginForm').addEventListener('submit', function() {
     const btn = document.getElementById('loginBtn');
@@ -429,7 +384,6 @@ document.getElementById('loginForm').addEventListener('submit', function() {
     btn.disabled = true;
 });
 </script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

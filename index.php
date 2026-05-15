@@ -2,12 +2,7 @@
 include('includes/connect.php');
 include('includes/flash.php');
 include('includes/header.php');
-
-// ==========================================
-// FILTER LOGIC
-// ==========================================
 $where = " WHERE 1=1";
-
 if (isset($_GET['search']) && !empty($_GET['search'])) {
     $s = mysqli_real_escape_string($conn, $_GET['search']);
     $where .= " AND (p.product_title LIKE '%$s%' OR p.description LIKE '%$s%')";
@@ -22,21 +17,15 @@ if (isset($_GET['min_price']) && is_numeric($_GET['min_price'])) {
 if (isset($_GET['max_price']) && is_numeric($_GET['max_price'])) {
     $where .= " AND p.product_price <= " . intval($_GET['max_price']);
 }
-
-// Pagination: 
 $per_page = 10;
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $offset = ($page - 1) * $per_page;
-
 $count_sql = "SELECT COUNT(*) as total FROM products p $where";
 $count_result = mysqli_query($conn, $count_sql);
 $total_products = mysqli_fetch_assoc($count_result)['total'];
 $total_pages = ceil($total_products / $per_page);
-
 $products_sql = "SELECT p.*, c.category_title FROM products p LEFT JOIN categories c ON p.category_id = c.category_id $where ORDER BY p.date_added DESC LIMIT $per_page OFFSET $offset";
 $result_products = mysqli_query($conn, $products_sql);
-
-// Categories
 $categories_sql = "SELECT * FROM categories ORDER BY category_id";
 $result_cats = mysqli_query($conn, $categories_sql);
 $all_cats = [];
@@ -44,10 +33,6 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
     $all_cats[] = $cat;
 }
 ?>
-
-<!-- ==========================================
-     CATEGORY BAR — Like NhatShop
-     ========================================== -->
 <div class="category-bar">
     <div class="container">
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
@@ -60,21 +45,14 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
         </div>
     </div>
 </div>
-
 <div class="container mt-3">
     <div class="row">
-
-        <!-- ==========================================
-             SIDEBAR FILTER
-             ========================================== -->
         <div class="col-md-2 d-none d-md-block filter-sidebar">
             <h6 class="mb-3"><i class="fas fa-filter text-muted me-1"></i>Bộ Lọc Tìm Kiếm</h6>
             <form action="index.php" method="GET">
                 <?php if(isset($_GET['search'])): ?>
                 <input type="hidden" name="search" value="<?php echo htmlspecialchars($_GET['search']); ?>">
                 <?php endif; ?>
-
-                <!-- Theo danh mục -->
                 <p class="mb-2 fw-medium small border-bottom pb-2">Theo Danh Mục</p>
                 <div class="mb-3" style="max-height: 200px; overflow-y:auto;">
                     <?php foreach($all_cats as $c): ?>
@@ -84,8 +62,6 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                     </div>
                     <?php endforeach; ?>
                 </div>
-
-                <!-- Khoảng giá -->
                 <p class="mb-2 fw-medium small border-bottom pb-2 mt-4">Khoảng Giá</p>
                 <div class="d-flex align-items-center gap-1 mb-3">
                     <input type="number" name="min_price" class="form-control form-control-sm" placeholder="₫ TỪ" value="<?php echo isset($_GET['min_price']) ? htmlspecialchars($_GET['min_price']) : ''; ?>">
@@ -93,28 +69,17 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                     <input type="number" name="max_price" class="form-control form-control-sm" placeholder="₫ ĐẾN" value="<?php echo isset($_GET['max_price']) ? htmlspecialchars($_GET['max_price']) : ''; ?>">
                 </div>
                 <button type="submit" class="btn btn-shopee btn-sm w-100 mb-2">ÁP DỤNG</button>
-
                 <a href="index.php" class="btn btn-light btn-sm w-100 border mt-3">Xóa Tất Cả</a>
             </form>
-
-            <!-- Banner Liên Hệ/Đăng Ký -->
             <div class="mt-4 p-3 rounded text-center text-white shadow-sm" style="background: linear-gradient(135deg, var(--shopee-primary), #ff9900); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" data-bs-toggle="modal" data-bs-target="#contactModal">
                 <i class="fas fa-user-edit fa-2x mb-2"></i>
                 <h6 class="fw-bold mb-1">Đăng Ký Thông Tin</h6>
                 <p class="small mb-2" style="opacity: 0.9;">Gửi thông tin để được hỗ trợ &amp; nhận ưu đãi</p>
                 <div class="btn btn-sm btn-light text-danger w-100 fw-bold" style="color:var(--shopee-primary) !important;">CLICK NGAY ĐỂ ĐĂNG KÝ</div>
             </div>
-
         </div>
-
-        <!-- ==========================================
-             MAIN CONTENT
-             ========================================== -->
         <div class="col-md-8">
-            
-            <!-- Banner Section -->
             <div class="row mb-4 g-2">
-                <!-- Left Slider (Bootstrap Carousel) -->
                 <div class="col-md-8">
                     <div id="heroCarousel" class="carousel slide carousel-fade shadow-sm rounded overflow-hidden h-100" data-bs-ride="carousel">
                         <div class="carousel-indicators">
@@ -161,8 +126,6 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                         </button>
                     </div>
                 </div>
-
-                <!-- Right Fixed Banner (4 images) -->
                 <div class="col-md-4 d-flex flex-column gap-2">
                     <div class="row g-2 h-100">
                         <div class="col-6 col-md-12 h-50">
@@ -190,8 +153,6 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                     </div>
                 </div>
             </div>
-
-            <!-- Best Sellers section (only show if no filters active) -->
             <?php if (!isset($_GET['category']) && !isset($_GET['search']) && !isset($_GET['min_price'])): ?>
             <div class='best-seller-section'>
                 <h5 class='mb-3 fw-bold' style='color: var(--shopee-primary);'><i class='fas fa-fire me-2'></i>Bán Chạy Nhất</h5>
@@ -205,7 +166,6 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                        $sold_bs = intval($bs['sold_count'] ?? 0);
                        $stock_bs = intval($bs['product_stock'] ?? 50);
                        $discount_bs = intval($bs['discount_percent'] ?? 0);
-                       
                        $price_bs = $bs['product_price'];
                        if($discount_bs > 0) {
                            $discount_price_bs = $price_bs * (100 - $discount_bs) / 100;
@@ -213,9 +173,7 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                        } else {
                            $price_html_bs = "<span class='price-tag'>" . number_format($price_bs, 0, ',', '.') . " ₫</span>";
                        }
-                       
                        $badge_html_bs = ($discount_bs > 0) ? "<span class='badge-discount'>-{$discount_bs}%</span>" : "";
-                       
                        $img_bs = htmlspecialchars($bs['product_image1']);
                        $img_src_bs = $img_bs;
                        if(!empty($img_src_bs) && strpos($img_src_bs, 'http') !== 0 && strpos($img_src_bs, 'assets/') !== 0) {
@@ -225,7 +183,6 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                     <div class='best-seller-card' <?php echo ($stock_bs <= 0) ? "style='opacity: 0.6; pointer-events: none;'" : ""; ?>>
                         <span class='badge-hot'>HOT</span>
                         <?php echo $badge_html_bs; ?>
-                        
                         <a href='product_details.php?product_id=<?php echo $pid_bs; ?>'>
                             <img src='<?php echo $img_src_bs; ?>' onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%23f0f0f0'/%3E%3Ctext x='100' y='110' text-anchor='middle' fill='%23aaa' font-size='14'%3ENo Image%3C/text%3E%3C/svg%3E'">
                         </a>
@@ -246,8 +203,6 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                 </div>
             </div>
             <?php endif; ?>
-
-            <!-- Active Category title -->
             <?php 
             $active_cat_title = 'Gợi Ý Hôm Nay';
             if(isset($_GET['category'])) {
@@ -259,10 +214,7 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                 }
             }
             ?>
-
             <div class="section-title"><span><?php echo htmlspecialchars($active_cat_title); ?></span></div>
-
-            <!-- Product Grid -->
             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-2">
                 <?php
                 if (mysqli_num_rows($result_products) > 0) {
@@ -270,26 +222,20 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                         $pid    = $row['product_id'];
                         $title  = htmlspecialchars($row['product_title']);
                         $price  = $row['product_price'];
-                        
-                        
                         $discount = intval($row['discount_percent'] ?? 0);
                         $stock = intval($row['product_stock'] ?? 50);
                         $sold = intval($row['sold_count'] ?? 0);
-                        
                         if($discount > 0) {
                             $discount_amount = $price * (100 - $discount) / 100;
                             $price_html = "<span class='price-original'>" . number_format($price, 0, ',', '.') . " ₫</span><span class='price-discount'>" . number_format($discount_amount, 0, ',', '.') . " ₫</span>";
                         } else {
                             $price_html = "<span class='price-tag'>" . number_format($price, 0, ',', '.') . " ₫</span>";
                         }
-
                         $badge_discount = ($discount > 0) ? "<span class='position-absolute top-0 end-0 bg-danger text-white px-2 py-1 m-2 rounded small fw-bold z-1'>-{$discount}%</span>" : "";
-
                         $overlay_html = "";
                         if($stock <= 0){
                             $overlay_html = "<div class='position-absolute w-100 h-100 d-flex justify-content-center align-items-center z-2' style='background:rgba(255,255,255,0.7); top:0; left:0;'><span class='badge bg-secondary fs-6'>Hết Hàng</span></div>";
                         }
-                        
                         $img    = htmlspecialchars($row['product_image1']);
                 ?>
                 <div class="col">
@@ -327,9 +273,6 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                 }
                 ?>
             </div>
-
-
-
             <?php if($total_pages > 1): ?>
             <div class="d-flex justify-content-center mt-2 mb-4">
                 <nav>
@@ -347,15 +290,9 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                 </nav>
             </div>
             <?php endif; ?>
-
         </div>
-
-        <!-- ==========================================
-             RIGHT PANEL - Free Ship
-             ========================================== -->
         <div class="col-md-2 d-none d-md-block">
             <div class="right-panel-sticky">
-                <!-- Free Ship Banner -->
                 <div class="rounded-3 overflow-hidden shadow-sm" style="background: linear-gradient(135deg, #00b894 0%, #00cec9 50%, #0984e3 100%);">
                     <div class="p-3 text-center text-white">
                         <div style="position:relative; display:inline-block; margin-bottom:8px;">
@@ -378,8 +315,6 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                         <span style="font-size:0.6rem; color:rgba(255,255,255,0.9);"><i class="fas fa-shield-alt me-1"></i>An toàn • Chất lượng</span>
                     </div>
                 </div>
-
-                <!-- Extra promo banners -->
                 <div class="mt-3 rounded-3 overflow-hidden shadow-sm text-center" style="background: linear-gradient(135deg, #ee4d2d, #ff9900);">
                     <div class="p-3 text-white">
                         <i class="fas fa-percent fa-2x mb-2" style="opacity:0.9;"></i>
@@ -387,7 +322,6 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                         <p class="mb-0" style="font-size:0.65rem; opacity:0.9;">Cho đơn hàng đầu tiên</p>
                     </div>
                 </div>
-
                 <div class="mt-3 rounded-3 overflow-hidden shadow-sm text-center" style="background: linear-gradient(135deg, #6c5ce7, #a29bfe);">
                     <div class="p-3 text-white">
                         <i class="fas fa-gift fa-2x mb-2" style="opacity:0.9;"></i>
@@ -395,7 +329,6 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                         <p class="mb-0" style="font-size:0.65rem; opacity:0.9;">Giảm thêm khi thanh toán</p>
                     </div>
                 </div>
-
                 <div class="mt-3 rounded-3 overflow-hidden shadow-sm text-center" style="background: linear-gradient(135deg, #fdcb6e, #e17055);">
                     <div class="p-3 text-white">
                         <i class="fas fa-headset fa-2x mb-2" style="opacity:0.9;"></i>
@@ -405,11 +338,8 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                 </div>
             </div>
         </div>
-
     </div>
 </div>
-
-<!-- Contact Form Modal -->
 <div class="modal fade" id="contactModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
@@ -439,7 +369,6 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
                         <label for="contactMessage" class="form-label small fw-bold">Nội Dung Cần Hỗ Trợ <span class="text-danger">*</span></label>
                         <textarea id="contactMessage" name="message" class="form-control" rows="3" required placeholder="Ghi chi tiết yêu cầu của bạn..."></textarea>
                     </div>
-          
                 </div>
                 <div class="modal-footer border-0 pb-4">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy Bỏ</button>
@@ -449,14 +378,12 @@ while($cat = mysqli_fetch_assoc($result_cats)) {
         </div>
     </div>
 </div>
-
 <script>
 document.getElementById('ajaxContactForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const btn = document.getElementById('btnSubmitContact');
     btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Đang xử lý...';
     btn.disabled = true;
-
     fetch(this.action, {
         method: "POST",
         body: new FormData(this),
@@ -488,5 +415,4 @@ document.getElementById('ajaxContactForm').addEventListener('submit', function(e
     });
 });
 </script>
-
 <?php include('includes/footer.php'); ?>

@@ -2,8 +2,6 @@
 include('includes/connect.php');
 include('includes/flash.php');
 include('includes/header.php');
-
-// Add to cart
 if(isset($_POST['add_to_cart'])){
     if(!isset($_SESSION['user_id'])){
         echo "<script>alert('Vui lòng đăng nhập để thêm vào giỏ hàng!');</script>";
@@ -12,18 +10,14 @@ if(isset($_POST['add_to_cart'])){
         $uid = $_SESSION['user_id'];
         $pid = intval($_POST['product_id']);
         $qty = intval($_POST['quantity']);
-
-        // Lấy thông tin tồn kho hiện tại
         $stock_q = mysqli_query($conn, "SELECT product_title, product_stock FROM products WHERE product_id=$pid");
         $stock_data = mysqli_fetch_assoc($stock_q);
         $max_stock = $stock_data['product_stock'];
         $p_title = $stock_data['product_title'];
-
         $check = mysqli_query($conn, "SELECT * FROM cart WHERE user_id=$uid AND product_id=$pid");
         if(mysqli_num_rows($check) > 0){
             $cart_data = mysqli_fetch_assoc($check);
             $new_qty = $cart_data['quantity'] + $qty;
-            
             if($new_qty > $max_stock) {
                 $new_qty = $max_stock;
                 echo "<script>alert('Bạn đã có sản phẩm này trong giỏ hàng. Tổng số lượng đã được giới hạn tối đa theo tồn kho ($max_stock)!');</script>";
@@ -37,12 +31,10 @@ if(isset($_POST['add_to_cart'])){
         echo "<script>window.open('product_details.php?product_id=$pid','_self');</script>";
     }
 }
-
 if (!isset($_GET['product_id'])) {
     echo "<script>window.open('index.php','_self')</script>";
     exit();
 }
-
 $product_id = intval($_GET['product_id']);
 $q = "SELECT p.*, u.username as seller_name, c.category_title, c.category_id 
       FROM products p 
@@ -50,13 +42,11 @@ $q = "SELECT p.*, u.username as seller_name, c.category_title, c.category_id
       LEFT JOIN categories c ON p.category_id = c.category_id
       WHERE p.product_id=$product_id";
 $result = mysqli_query($conn, $q);
-
 if (mysqli_num_rows($result) == 0) {
     echo "<script>alert('Sản phẩm không tồn tại.')</script>";
     echo "<script>window.open('index.php','_self')</script>";
     exit();
 }
-
 $row = mysqli_fetch_assoc($result);
 $product_title = $row['product_title'];
 $description = $row['description'];
@@ -64,42 +54,29 @@ $product_price = $row['product_price'];
 $formatted_price = number_format($product_price, 0, ',', '.');
 $product_image = $row['product_image1'];
 $seller_name = $row['seller_name'];
-
 $cat_title = $row['category_title'];
 $cat_id    = $row['category_id'];
-
-// Stock count
 $stock = $row['product_stock'] ?? 0;
-// Sold count
 $sold = $row['sold_count'] ?? 0;
-// Discount
 $discount = intval($row['discount_percent'] ?? 0);
-
 if($discount > 0) {
     $discounted = $product_price * (100 - $discount) / 100;
     $price_html = "<span class='price-original'>₫" . number_format($product_price, 0, ',', '.') . "</span><span class='price-discount'>₫" . number_format($discounted, 0, ',', '.') . " <span class='badge bg-danger fs-6 align-middle ms-2'>-$discount%</span></span>";
 } else {
     $price_html = "<span class='price-tag'>₫" . number_format($product_price, 0, ',', '.') . "</span>";
 }
-
-// Get extra images
 $img_query = mysqli_query($conn, "SELECT * FROM product_images WHERE product_id=$product_id ORDER BY sort_order");
 $extra_images = [];
 while($img_row = mysqli_fetch_assoc($img_query)) {
     $extra_images[] = $img_row['image_url'];
 }
-// Combine main + extra (main image is always first)
 $all_images = [$product_image]; 
 foreach($extra_images as $ei) {
     if($ei !== $product_image) $all_images[] = $ei;
 }
-
-// Related products (same category)
 $related_query = mysqli_query($conn, "SELECT * FROM products WHERE category_id=$cat_id AND product_id!=$product_id ORDER BY RAND() LIMIT 5");
 ?>
-
 <div class="container mt-4">
-    <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-3">
       <ol class="breadcrumb small">
         <li class="breadcrumb-item"><a href="index.php" class="text-decoration-none">NhatShop</a></li>
@@ -109,9 +86,7 @@ $related_query = mysqli_query($conn, "SELECT * FROM products WHERE category_id=$
         <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($product_title); ?></li>
       </ol>
     </nav>
-
     <div class="row bg-white p-4 g-0 mb-4 rounded shadow-sm">
-        <!-- IMAGE GALLERY -->
         <div class="col-md-5 pe-md-4">
             <?php 
             $main_img = $all_images[0];
@@ -120,7 +95,6 @@ $related_query = mysqli_query($conn, "SELECT * FROM products WHERE category_id=$
             }
             ?>
             <img src="<?php echo htmlspecialchars($main_img); ?>" class="gallery-main-img" id="mainImage" alt="<?php echo htmlspecialchars($product_title); ?>" onerror="this.src='data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%23f0f0f0'/%3E%3Ctext x='100' y='110' text-anchor='middle' fill='%23aaa' font-size='14'%3ENo Image%3C/text%3E%3C/svg%3E'">
-            
             <?php if(count($all_images) > 1): ?>
             <div class="gallery-thumbs">
                 <?php foreach($all_images as $idx => $img_url): 
@@ -137,12 +111,8 @@ $related_query = mysqli_query($conn, "SELECT * FROM products WHERE category_id=$
             </div>
             <?php endif; ?>
         </div>
-        
-        <!-- PRODUCT INFO -->
         <div class="col-md-7">
             <h1 class="fs-5 fw-normal lh-base mb-2"><?php echo htmlspecialchars($product_title); ?></h1>
-            
-            <!-- Info bar -->
             <div class="d-flex align-items-center gap-3 pb-3 mb-3 border-bottom">
                  <?php if($sold > 0): ?>
                      <div class="text-muted small border-end pe-3">Đã bán <span class="text-dark fw-bold"><?php echo $sold; ?></span></div>
@@ -151,29 +121,20 @@ $related_query = mysqli_query($conn, "SELECT * FROM products WHERE category_id=$
                     <i class="fas fa-shield-alt me-1"></i> Chính hãng 100%
                 </div>
             </div>
-            
-            <!-- Price -->
             <div class="p-3 mb-3" style="background: #fafafa;">
                 <?php echo $price_html; ?>
             </div>
-            
-            <!-- Policies -->
             <div class="mb-3 small">
                 <span class="text-muted me-2">Chính sách</span>
                 <span><i class="fas fa-undo me-1 text-muted"></i>Trả hàng 15 ngày</span>
                 <span class="ms-3"><i class="fas fa-shield-alt me-1 text-muted"></i>Chính hãng 100%</span>
             </div>
-            
-            <!-- Seller -->
             <div class="mb-4 small">
                 <span class="text-muted me-2">Shop</span>
                 <span class="badge bg-light text-dark border"><i class="fas fa-store me-1 text-muted"></i><?php echo htmlspecialchars($seller_name); ?></span>
             </div>
-            
-            <!-- Add to cart form -->
             <form action="" method="post">
                 <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
-                
                 <div class="mb-4 d-flex align-items-center gap-3">
                     <span class="text-muted small">Số Lượng</span>
                     <div class="input-group" style="width: 130px;">
@@ -183,7 +144,6 @@ $related_query = mysqli_query($conn, "SELECT * FROM products WHERE category_id=$
                     </div>
                     <span class="text-muted small"><?php echo $stock; ?> sản phẩm có sẵn</span>
                 </div>
-                
                 <div class="d-flex gap-3">
                     <?php if($stock <= 0): ?>
                         <button type="button" class="btn btn-secondary px-5 py-2 disabled" style="opacity: 0.6;">
@@ -201,8 +161,6 @@ $related_query = mysqli_query($conn, "SELECT * FROM products WHERE category_id=$
             </form>
         </div>
     </div>
-    
-    <!-- DESCRIPTION -->
     <div class="bg-white p-4 rounded shadow-sm mb-4">
         <h5 class="bg-light p-2 text-uppercase small fw-bold" style="border-left: 4px solid var(--shopee-primary); color:rgba(0,0,0,0.7);">
             Chi Tiết Sản Phẩm
@@ -220,8 +178,6 @@ $related_query = mysqli_query($conn, "SELECT * FROM products WHERE category_id=$
 <?php echo htmlspecialchars($description); ?>
         </div>
     </div>
-
-    <!-- RELATED PRODUCTS -->
     <?php if(mysqli_num_rows($related_query) > 0): ?>
     <div class="section-title"><span>Sản Phẩm Tương Tự</span></div>
     <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-2 mb-4">
@@ -234,11 +190,9 @@ $related_query = mysqli_query($conn, "SELECT * FROM products WHERE category_id=$
                     if(!empty($rel_img) && strpos($rel_img, 'http') !== 0 && strpos($rel_img, 'assets/') !== 0) {
                         $rel_img = 'assets/images/' . $rel_img;
                     }
-                    
                     $rel_price = $rp['product_price'];
                     $rel_discount = intval($rp['discount_percent'] ?? 0);
                     $rel_stock = intval($rp['product_stock'] ?? 50);
-                    
                     if($rel_discount > 0) {
                         $rel_discounted = $rel_price * (100 - $rel_discount) / 100;
                         $rel_price_html = "<span class='price-original'>" . number_format($rel_price, 0, ',', '.') . " ₫</span><span class='price-discount'>" . number_format($rel_discounted, 0, ',', '.') . " ₫</span>";
@@ -262,7 +216,6 @@ $related_query = mysqli_query($conn, "SELECT * FROM products WHERE category_id=$
     </div>
     <?php endif; ?>
 </div>
-
 <script>
 function changeMainImage(thumb, url) {
     document.getElementById('mainImage').src = url;
@@ -278,5 +231,4 @@ function changeQty(delta) {
     input.value = v;
 }
 </script>
-
 <?php include('includes/footer.php'); ?>

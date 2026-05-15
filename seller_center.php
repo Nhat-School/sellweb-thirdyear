@@ -2,34 +2,15 @@
 include('includes/connect.php');
 include('includes/flash.php');
 include('includes/header.php');
-
 if(!isset($_SESSION['user_id'])){
     echo "<script>alert('Vui lòng đăng nhập để truy cập Kênh Người Bán!');</script>";
     echo "<script>window.open('login.php','_self');</script>";
     exit();
 }
-
-$seller_id = $_SESSION['user_id'];
-
-
-// ── Check if current user is admin ──
-$is_admin = false;
-$admin_q = mysqli_query($conn, "SELECT is_admin FROM users WHERE user_id = $seller_id");
-if ($admin_q && $row = mysqli_fetch_assoc($admin_q)) {
-    $is_admin = ($row['is_admin'] == 1);
-}
-
-// Get categories (needed globally for sidebar and forms)
-$cats_result = mysqli_query($conn, "SELECT * FROM categories ORDER BY category_id");
-
-// Include all backend processing logic
 include('includes/seller/actions.php');
-
 ?>
-
 <div class="container mt-4">
     <div class="row">
-        <!-- Sidebar -->
         <div class="col-md-3">
             <div class="card border-0 shadow-sm mb-3">
                 <div class="card-body text-center py-4" style="background: linear-gradient(135deg, var(--shopee-primary), #ff9900); border-radius: 4px;">
@@ -63,25 +44,19 @@ include('includes/seller/actions.php');
                 </a>
             </div>
         </div>
-        
-        <!-- Main Content -->
         <div class="col-md-9">
-
             <?php if(!empty($success_msg)): ?>
             <div class="alert alert-success alert-dismissible fade show mb-3">
                 <i class="fas fa-check-circle me-2"></i><?php echo $success_msg; ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             <?php endif; ?>
-            
             <?php if(!empty($error_msg)): ?>
             <div class="alert alert-danger alert-dismissible fade show mb-3">
                 <i class="fas fa-exclamation-circle me-2"></i><?php echo $error_msg; ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             <?php endif; ?>
-
-            <!-- Render specific tab view -->
             <?php 
             if($tab == 'add') {
                 include('includes/seller/views/tab_add_product.php');
@@ -99,16 +74,9 @@ include('includes/seller/actions.php');
                 include('includes/seller/views/tab_products.php');
             }
             ?>
-
         </div>
     </div>
 </div>
-
-<!-- ============================================= -->
-<!-- Modals and Global Scripts for Seller Center   -->
-<!-- ============================================= -->
-
-<!-- Thêm Danh Mục Modal (Visible to Admin only) -->
 <?php if ($is_admin): ?>
 <div class="modal fade" id="addCatModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -136,8 +104,6 @@ include('includes/seller/actions.php');
         </div>
     </div>
 </div>
-
-<!-- Chỉnh Sửa Danh Mục Modal -->
 <div class="modal fade" id="editCatModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
@@ -172,7 +138,6 @@ include('includes/seller/actions.php');
     </div>
 </div>
 <?php endif; ?>
-
 <style>
 .upload-zone:hover { border-color: var(--shopee-primary) !important; }
 .upload-extra-btn:hover { border-color: var(--shopee-primary) !important; }
@@ -182,18 +147,13 @@ include('includes/seller/actions.php');
     flex-shrink: 0;
 }
 </style>
-
 <script>
-// Auto open Edit Category modal if edit_category param exists
 <?php if(isset($_GET['edit_category']) && $is_admin): ?>
 document.addEventListener('DOMContentLoaded', function() {
     var editModal = new bootstrap.Modal(document.getElementById('editCatModal'));
     editModal.show();
 });
 <?php endif; ?>
-
-// Reopen modal if delete_category was performed removed as unused in current UI flow.
-
 function previewMain(input) {
     if(input.files && input.files[0]) {
         const file = input.files[0];
@@ -213,13 +173,10 @@ function previewMain(input) {
         reader.readAsDataURL(file);
     }
 }
-
 function previewExtra(input) {
     const container = document.getElementById('extraPreviewContainer');
-    // Remove existing thumbs (keep the add button)
     const existing = container.querySelectorAll('.extra-thumb');
     existing.forEach(el => el.remove());
-
     if(input.files) {
         const maxFiles = 5;
         const filesToShow = Math.min(input.files.length, maxFiles);
@@ -232,7 +189,6 @@ function previewExtra(input) {
                     img.src = e.target.result;
                     img.className = 'extra-thumb';
                     img.title = file.name;
-                    // Insert before the Add button
                     const addBtn = document.getElementById('addExtraBtn');
                     container.insertBefore(img, addBtn);
                 };
@@ -241,19 +197,14 @@ function previewExtra(input) {
         }
     }
 }
-
 function resetPreviews() {
-    // Reset main preview
     document.getElementById('mainImgPreview').classList.add('d-none');
     document.getElementById('mainImgPreview').src = '';
     document.getElementById('mainImgPlaceholder').classList.remove('d-none');
     document.getElementById('mainImgName').classList.add('d-none');
     document.getElementById('mainImgZone').style.borderColor = '#ddd';
-
-    // Reset extra previews
     const existing = document.querySelectorAll('.extra-thumb');
     existing.forEach(el => el.remove());
 }
 </script>
-
 <?php include('includes/footer.php'); ?>

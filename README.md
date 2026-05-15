@@ -1,48 +1,59 @@
-# Hướng dẫn cài đặt NhatShop trên máy mới
+# Hướng dẫn cài đặt NhatShop trên máy mới bằng XAMPP
 
-Tài liệu này hướng dẫn bạn cách thiết lập và chạy dự án NhatShop trên một máy tính mới sử dụng Docker.
+Tài liệu này hướng dẫn bạn cách thiết lập và chạy dự án NhatShop trên một máy tính mới sử dụng **XAMPP** (phù hợp cho các máy không thể cài đặt Docker).
 
 ## 1. Yêu cầu hệ thống
 Trước khi bắt đầu, hãy đảm bảo máy tính của bạn đã cài đặt:
-- **Docker Desktop** (Đã bao gồm Docker Compose).
-- **Git**.
+- **XAMPP** (phiên bản có chứa PHP 8.x).
+- **Git** (nếu bạn muốn clone mã nguồn từ GitHub).
 
 ## 2. Các bước cài đặt
 
-### Bước 1: Tải mã nguồn về máy
-Mở Terminal (hoặc Command Prompt) và chạy lệnh sau để clone dự án:
-```bash
-git clone https://github.com/Nhat-School/sellweb-thirdyear.git
-cd sellweb-thirdyear
+### Bước 1: Tải mã nguồn về thư mục của XAMPP
+Bạn cần đặt thư mục mã nguồn vào đúng vị trí để XAMPP có thể đọc được (thư mục `htdocs`):
+- **Windows:** Thường là `C:\xampp\htdocs\`
+- **MacOS:** Thường là `/Applications/XAMPP/xamppfiles/htdocs/`
+
+**Cách đơn giản nhất (Dùng file ZIP):**
+1. Tải file ZIP của dự án NhatShop về máy.
+2. Giải nén file ZIP đó.
+3. Copy toàn bộ thư mục vừa giải nén (ví dụ tên là `NhatShop`) và dán trực tiếp vào thư mục `htdocs` ở trên.
+
+*(Nếu dùng Git, bạn có thể chạy lệnh: `git clone https://github.com/Nhat-School/sellweb-thirdyear.git NhatShop` ngay tại thư mục htdocs).*
+
+### Bước 2: Khởi động XAMPP
+Mở phần mềm **XAMPP Control Panel** lên và nhấn **Start** ở 2 dịch vụ:
+- **Apache** (Web Server).
+- **MySQL** (Database).
+
+### Bước 3: Cấu hình Cơ sở dữ liệu (Database)
+1. Mở trình duyệt và truy cập: [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
+2. Nhấn vào **Mới (New)** ở cột bên trái để tạo Database mới.
+3. Nhập tên Database là: `mystore` (Chọn Bảng mã Collation là `utf8mb4_unicode_ci` hoặc `utf8mb4_general_ci`).
+4. Bấm **Tạo (Create)**.
+5. Sau khi tạo xong, chọn database `mystore` vừa tạo, chuyển sang tab **Nhập (Import)**.
+6. Bấm **Choose File**, tìm đến file backup nằm trong dự án của bạn (đường dẫn `sellweb-thirdyear/sql/latest_backup.sql`).
+7. Bấm **Thực hiện (Go)** ở dưới cùng để nạp dữ liệu.
+
+### Bước 4: Sửa file kết nối Database
+Do trước đây dự án dùng Docker nên file kết nối cần được chỉnh lại cho phù hợp với XAMPP.
+Mở file `includes/connect.php` (hoặc file cấu hình DB tương tự) và sửa lại thông tin như sau:
+```php
+// Thông tin cho XAMPP mặc định
+$host = "localhost";
+$user = "root";
+$pass = ""; // Mặc định XAMPP không có mật khẩu
+$db   = "mystore";
+
+$conn = mysqli_connect($host, $user, $pass, $db);
 ```
 
-### Bước 2: Khởi động hệ thống bằng Docker
-Chạy lệnh sau để build và khởi động các container:
-```bash
-docker-compose up -d --build
-```
-*Lưu ý: Lệnh này sẽ tự động tải các image cần thiết và thiết lập môi trường chạy PHP & MySQL.*
-
-### Bước 3: Kiểm tra ứng dụng
-Sau khi các container đã chạy thành công, bạn có thể truy cập:
-- **Trang chủ Website:** [http://localhost:8080](http://localhost:8080)
-- **Cơ sở dữ liệu (MySQL):** Cổng `3306` (Sử dụng các phần mềm như Navicat, DBeaver để kết nối).
-
-## 3. Hướng dẫn cập nhật dữ liệu từ file Backup
-Mặc định khi chạy lần đầu, Docker sẽ khởi tạo cấu trúc database cơ bản. Để cập nhật toàn bộ dữ liệu mới nhất từ file backup bạn vừa tạo (`latest_backup.sql`), hãy chạy lệnh sau:
-
-```bash
-# MacOS
-docker compose exec -T db mysql -u root -psecurepassword mystore < sql/latest_backup.sql
-# Windows ps
-Get-Content -Encoding UTF8 sql/latest_backup.sql | docker compose exec -T db mysql --default-character-set=utf8mb4 -u root -psecurepassword mystore
-```
-
-## 4. Thông tin quản trị
-- **Database Name:** `mystore`
-- **Database User:** `root`
-- **Database Password:** `securepassword`
-- **Thư mục ảnh sản phẩm:** `assets/images/` (Đã được phân quyền 777 trong Docker).
+### Bước 5: Truy cập Website
+Mở trình duyệt và truy cập vào đường dẫn thư mục dự án của bạn. Nếu bạn giữ nguyên tên khi clone, đường dẫn sẽ là:
+[http://localhost/sellweb-thirdyear](http://localhost/sellweb-thirdyear)
 
 ---
 
+## Các lưu ý khác:
+- **Quyền ghi file ảnh:** Trong XAMPP Windows, thư mục `assets/images/` thường đã có sẵn quyền ghi. Tuy nhiên nếu dùng MacOS, bạn có thể cần cấp quyền bằng lệnh `chmod -R 777 assets/images/` để có thể upload ảnh sản phẩm.
+- **Dọn dẹp code thừa:** Bạn có thể xóa file `Dockerfile` và `docker-compose.yml` vì hệ thống hiện tại chạy bằng XAMPP và không cần dùng đến chúng nữa.

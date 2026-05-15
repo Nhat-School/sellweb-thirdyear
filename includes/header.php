@@ -1,5 +1,4 @@
 <?php
-// Avoid duplicate session_start (connect.php already starts it with a check)
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -11,13 +10,9 @@ if (session_status() === PHP_SESSION_NONE) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NhatShop - Mua Sắm Online | Giá Tốt, Đảm Bảo Chính Hãng</title>
     <meta name="description" content="Mua sắm online hàng triệu sản phẩm ở mọi ngành hàng. Giá tốt, đảm bảo chính hãng, giao hàng nhanh.">
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body>
@@ -50,9 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <?php endif; ?>
-
 <?php
-// Cart count
 $cart_count = 0;
 if (isset($_SESSION['user_id']) && isset($conn)) {
     $uid = $_SESSION['user_id'];
@@ -60,20 +53,15 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
     $row = mysqli_fetch_assoc($r);
     $cart_count = $row['c'] ? $row['c'] : 0;
 }
-
-// Avatar for logged-in user
 $final_avatar_url = '';
 $dicebear_url = '';
-
 if (isset($_SESSION['user_id']) && isset($conn)) {
     $uid_h = $_SESSION['user_id'];
     $dicebear_url = 'https://api.dicebear.com/7.x/initials/svg?seed=' . urlencode($_SESSION['username']);
-    
     $r2 = mysqli_query($conn, "SELECT user_image FROM users WHERE user_id=$uid_h");
     if ($r2 && mysqli_num_rows($r2) > 0) {
         $urow = mysqli_fetch_assoc($r2);
         $avatar_db = $urow['user_image'] ?? '';
-        
         if ($avatar_db !== '' && $avatar_db !== 'default_user.png') {
             $final_avatar_url = 'assets/images/' . $avatar_db;
         } else {
@@ -82,17 +70,14 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
     }
 }
 ?>
-
 <header class="shopee-header">
     <div class="container">
-        <!-- Top Navigation -->
         <div class="top-nav">
             <div class="nav-links">
                 <a href="seller_center.php" class="me-3"><i class="fas fa-store me-1"></i>Kênh Người Bán</a>
                 <a href="#" class="me-3">Tải Ứng Dụng</a>
                 <a href="#">Kết Nối <i class="fab fa-facebook ms-1"></i> <i class="fab fa-instagram"></i></a>
             </div>
-
             <div class="user-links d-flex align-items-center gap-2">
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <a href="profile.php" class="d-flex align-items-center gap-2 text-decoration-none me-3" style="color: rgba(255,255,255,0.92);">
@@ -109,8 +94,6 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
                 <?php endif; ?>
             </div>
         </div>
-
-        <!-- Main Header -->
         <div class="header-main pb-2">
             <a href="index.php" class="header-logo text-white text-decoration-none d-flex align-items-center gap-2">
                 <div style="background: white; color: var(--shopee-primary); width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 3px 6px rgba(0,0,0,0.15);">
@@ -118,7 +101,6 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
                 </div>
                 <span class="logo-text fw-bold fs-4" style="letter-spacing: 0.5px; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">NhatShop</span>
             </a>
-
             <div class="search-bar flex-grow-1 mx-4">
                 <form action="index.php" method="GET">
                     <input type="text" name="search"
@@ -127,7 +109,6 @@ if (isset($_SESSION['user_id']) && isset($conn)) {
                     <button type="submit"><i class="fas fa-search"></i></button>
                 </form>
             </div>
-
             <div class="cart-icon fs-4">
                 <a href="cart.php" class="text-white position-relative text-decoration-none">
                     <i class="fas fa-shopping-cart"></i>

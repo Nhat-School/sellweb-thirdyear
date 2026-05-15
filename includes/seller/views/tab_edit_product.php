@@ -1,4 +1,4 @@
-<!-- Edit Product Form -->
+
 <div class="card shadow-sm border-0 mb-4">
     <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
         <h5 class="mb-0 fw-medium"><i class="fas fa-edit me-2" style="color:var(--shopee-primary);"></i>Chỉnh Sửa Sản Phẩm: <?php echo htmlspecialchars($edit_p['product_title']); ?></h5>
