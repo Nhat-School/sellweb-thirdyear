@@ -60,3 +60,13 @@ phpmyadmin config: $cfg['Servers'][$i]['port'] = '3307';
 and port of mysql 3307
 -----
 httpd-ssl.conf Listen 443 - 4433,<VirtualHost _default_:443>
+
+Bước 1: Cấu hình đường dẫn (Chỉ cần làm lần đầu)
+Vì đây là bản Portable (có thể copy đi nhiều nơi), bạn cần chạy tệp để XAMPP tự động cập nhật đường dẫn hiện tại của thư mục:
+
+Tìm và nhấn đúp chuột vào tệp: setup_xampp.bat
+Một cửa sổ màu đen (Command Prompt) sẽ hiện ra, nó sẽ tự chạy một lúc rồi báo hoàn tất. Bạn nhấn một phím bất kỳ để đóng nó lại.
+Bước 2: Mở bảng điều khiển (XAMPP Control Panel)
+Đây là giao diện chính để bạn quản lý các dịch vụ:
+
+Tìm và nhấn đúp chuột vào tệp: xampp-control.exe
