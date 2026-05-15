@@ -27,7 +27,7 @@ Mở phần mềm **XAMPP Control Panel** lên và nhấn **Start** ở 2 dịch
 - **MySQL** (Database).
 
 ### Bước 3: Cấu hình Cơ sở dữ liệu (Database)
-1. Mở trình duyệt và truy cập: [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
+1. Mở trình duyệt và truy cập: [http://localhost:8080/phpmyadmin](http://localhost:8080/phpmyadmin)
 2. Nhấn vào **Mới (New)** ở cột bên trái để tạo Database mới.
 3. Nhập tên Database là: `mystore` (Chọn Bảng mã Collation là `utf8mb4_unicode_ci` hoặc `utf8mb4_general_ci`).
 4. Bấm **Tạo (Create)**.
@@ -50,10 +50,13 @@ $conn = mysqli_connect($host, $user, $pass, $db);
 
 ### Bước 5: Truy cập Website
 Mở trình duyệt và truy cập vào đường dẫn thư mục dự án của bạn. Nếu bạn giữ nguyên tên khi clone, đường dẫn sẽ là:
-[http://localhost/sellweb-thirdyear](http://localhost/sellweb-thirdyear)
+[http://localhost:8080]
 
 ---
 
 httpd.conf :Listen 80 - 8080,ServerName localhost:80
+-----
 phpmyadmin config: $cfg['Servers'][$i]['port'] = '3307';
+and port of mysql 3307
+-----
 httpd-ssl.conf Listen 443 - 4433,<VirtualHost _default_:443>

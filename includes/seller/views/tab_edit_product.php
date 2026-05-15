@@ -36,7 +36,7 @@
                     <input type="number" class="form-control" name="discount_percent" value="<?php echo intval($edit_p['discount_percent'] ?? 0); ?>" min="0" max="100" style="max-width: 250px;">
                 </div>
                 <div class="col-12">
-                    <label class="form-label small fw-bold">Mô tả <span class="text-danger">*</span></label>
+                    <label class="form-label small fw-bold">Mô tả <span class="text-danger">*</span></label> 
                     <textarea name="description" class="form-control" rows="5" required><?php echo htmlspecialchars($edit_p['description']); ?></textarea>
                 </div>
                 <div class="col-12">
