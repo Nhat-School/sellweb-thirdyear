@@ -1,6 +1,4 @@
-# Hướng dẫn cài đặt NhatShop trên máy mới bằng XAMPP
-
-Tài liệu này hướng dẫn bạn cách thiết lập và chạy dự án NhatShop trên một máy tính mới sử dụng **XAMPP** (phù hợp cho các máy không thể cài đặt Docker).
+ https://ducnhan.infinityfree.me/index.php link web của tôi 
 
 ## 1. Yêu cầu hệ thống
 Trước khi bắt đầu, hãy đảm bảo máy tính của bạn đã cài đặt:
